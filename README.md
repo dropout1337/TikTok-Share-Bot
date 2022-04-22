@@ -36,5 +36,9 @@
 
 ---------------------------------------
 
+![Preview](https://i.imgur.com/Tjb0Z6v.png)
+
+---------------------------------------
+
 ### Contact
 View my contact information on my [telegram](https://t.me/dropoutuwu/)
