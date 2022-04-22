@@ -29,5 +29,12 @@
 
 ---------------------------------------
 
+### Features
+* Multi-threading
+* Proxyless
+* Easy and fast to use
+
+---------------------------------------
+
 ### Contact
 View my contact information on my [telegram](https://t.me/dropoutuwu/)
