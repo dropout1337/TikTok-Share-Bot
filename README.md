@@ -18,7 +18,7 @@
   <h2 align="center">TikTok Share Bot</h3>
 
   <p align="center">
-    A fast tiktok share bot using golang.
+    A fast tiktok share bot using Go.
     <br />
     <br />
     <a href="https://github.com/dropout1337/TikTok-Share-Bot/issues">Report Bug</a>
@@ -27,19 +27,21 @@
   </p>
 </div>
 
----------------------------------------
+---
 
 ### Features
-* Multi-threading
-* Proxyless
-* Easy and fast to use
 
----------------------------------------
+-   Multi-threading
+-   Proxyless
+-   Easy and fast to use
+
+---
 
 ![Preview](https://i.imgur.com/Tjb0Z6v.png)
 
----------------------------------------
+---
 
 ### Contact
+
 View my contact information on my [telegram](https://t.me/dropoutuwu/)
 Thanks to [MohanadHosny](https://github.com/MohanadHosny) for helping out big time <3
