@@ -64,7 +64,7 @@ func background() {
 	}
 }
 
-func random_device_id() string { // MohanadHosny
+func random_device_id() string {
 	device := ""
 	rand.Seed(time.Now().UnixNano())
 
@@ -82,10 +82,9 @@ func generate_data() string {
 	channel := channels[rand.Intn(len(channels))]
 	device := devices[rand.Intn(len(devices))]
 	app_name := app_names[rand.Intn(len(app_names))]
-	version := strconv.Itoa(rand.Intn(12-1) + 12) // MohanadHosny
-	device_id := random_device_id() // MohanadHosny
+	version := strconv.Itoa(rand.Intn(12-1) + 12)
+	device_id := random_device_id()
 
-	// MohanadHosny
 	url := fmt.Sprintf("https://%s/aweme/v1/aweme/stats/?channel=%s&device_type=%s&device_id=%s&os_version=%s&version_code=220400&app_name=%s&device_platform=%s&aid=1988", domain, channel, device, device_id, version, app_name, platform)
 	return url
 }
@@ -99,8 +98,20 @@ func share() {
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 		client := &http.Client{}
-		resp, _ := client.Do(req)
-		body, _ := io.ReadAll(resp.Body)
+		resp, err := client.Do(req)
+
+		if err != nil {
+			failed += 1
+			return
+		}
+
+		body, err := io.ReadAll(resp.Body)
+
+		if err != nil {
+			failed += 1
+			return
+		}
+
 		resp.Body.Close()
 
 		if strings.Contains(string(body), "status_code\":0") {
