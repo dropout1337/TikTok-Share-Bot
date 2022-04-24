@@ -1,23 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"math/rand"
-	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/admin100/util/console"
 	"github.com/corpix/uarand"
+	"github.com/valyala/fasthttp"
 )
 
 var (
+	client fasthttp.Client
+
 	threads int
 	item_id string
 
@@ -44,7 +43,7 @@ func main() {
 	fmt.Printf("[\x1b[38;5;63m%s\x1b[0m] Threads\x1b[38;5;63m>\x1b[0m ", time.Now().Format("15:04:05"))
 	fmt.Scanln(&threads)
 
-	fmt.Println()
+	fmt.Println("\x1b[?25l")
 
 	go background()
 	for i := 0; i < threads; i++ {
@@ -52,6 +51,8 @@ func main() {
 		fmt.Printf("\r[\x1b[38;5;63m%s\x1b[0m] Successfully started \x1b[38;5;63m%.0f\x1b[0m threads.", time.Now().Format("15:04:05"), float64(i+1))
 		go share()
 	}
+
+	fmt.Printf("\n[\x1b[38;5;63m%s\x1b[0m] Press \x1b[38;5;63mCTRL+C\x1b[0m at anytime to stop.", time.Now().Format("15:04:05"))
 
 	wg.Wait()
 }
@@ -61,6 +62,7 @@ func background() {
 		if shared%100 == 0 {
 			console.SetConsoleTitle(fmt.Sprintf("[TikTok Shares] youtube.com/dropoutuwu - Sent %d/%d", shared, (failed + shared)))
 		}
+		time.Sleep(500)
 	}
 }
 
@@ -93,31 +95,24 @@ func share() {
 	for {
 		url := generate_data()
 
-		req, _ := http.NewRequest("POST", url, bytes.NewBufferString("item_id="+item_id+"&share_delta=1"))
+		req := fasthttp.AcquireRequest()
+		res := fasthttp.AcquireResponse()
+
+		defer fasthttp.ReleaseRequest(req)
+		defer fasthttp.ReleaseResponse(res)
+
+		req.Header.SetMethod("POST")
+		req.SetRequestURI(url)
+		req.SetBody([]byte(fmt.Sprintf("item_id=%v&share_delta=1", item_id)))
+
 		req.Header.Set("User-Agent", uarand.GetRandom())
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
-		client := &http.Client{}
-		resp, err := client.Do(req)
-
-		if err != nil {
-			failed += 1
+		if err := client.Do(req, res); err != nil {
+			failed++
 			return
-		}
-
-		body, err := io.ReadAll(resp.Body)
-
-		if err != nil {
-			failed += 1
-			return
-		}
-
-		resp.Body.Close()
-
-		if strings.Contains(string(body), "status_code\":0") {
-			shared += 1
 		} else {
-			failed += 1
+			shared++
 		}
 	}
 }
