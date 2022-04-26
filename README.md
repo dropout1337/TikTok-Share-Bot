@@ -30,6 +30,7 @@
 ---
 
 ## Patched!
+- discord.gg/share-bot
 
 ### Features
 
