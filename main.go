@@ -18,12 +18,12 @@ var (
 	client fasthttp.Client
 
 	threads int
-	item_id string
+	itemID string
 
 	shared int
 	failed int
 
-	app_names = []string{"tiktok_web", "musically_go"}
+	appNames = []string{"tiktok_web", "musically_go"}
 	domains   = []string{"api19.tiktokv.com", "api.toutiao50.com", "api19.toutiao50.com", "api19-core-c-alisg.tiktokv.com"}
 	channels  = []string{"tiktok_web", "googleplay", "App%20Store"}
 	platforms = []string{"android", "windows", "iphone", "web"}
@@ -38,7 +38,7 @@ func main() {
 	wg := sync.WaitGroup{}
 
 	fmt.Printf("[\x1b[38;5;63m%s\x1b[0m] Item ID\x1b[38;5;63m>\x1b[0m ", time.Now().Format("15:04:05"))
-	fmt.Scanln(&item_id)
+	fmt.Scanln(&itemID)
 
 	fmt.Printf("[\x1b[38;5;63m%s\x1b[0m] Threads\x1b[38;5;63m>\x1b[0m ", time.Now().Format("15:04:05"))
 	fmt.Scanln(&threads)
@@ -66,7 +66,7 @@ func background() {
 	}
 }
 
-func random_device_id() string {
+func randomDeviceID() string {
 	device := ""
 	rand.Seed(time.Now().UnixNano())
 
@@ -78,22 +78,22 @@ func random_device_id() string {
 	return device
 }
 
-func generate_data() string {
+func generateData() string {
 	domain := domains[rand.Intn(len(domains))]
 	platform := platforms[rand.Intn(len(platforms))]
 	channel := channels[rand.Intn(len(channels))]
 	device := devices[rand.Intn(len(devices))]
-	app_name := app_names[rand.Intn(len(app_names))]
+	appName := appNames[rand.Intn(len(appNames))]
 	version := strconv.Itoa(rand.Intn(12-1) + 12)
-	device_id := random_device_id()
+	deviceID := randomDeviceID()
 
-	url := fmt.Sprintf("https://%s/aweme/v1/aweme/stats/?channel=%s&device_type=%s&device_id=%s&os_version=%s&version_code=220400&app_name=%s&device_platform=%s&aid=1988", domain, channel, device, device_id, version, app_name, platform)
+	url := fmt.Sprintf("https://%s/aweme/v1/aweme/stats/?channel=%s&device_type=%s&device_id=%s&os_version=%s&version_code=220400&app_name=%s&device_platform=%s&aid=1988", domain, channel, device, deviceID, version, appName, platform)
 	return url
 }
 
 func share() {
 	for {
-		url := generate_data()
+		url := generateData()
 
 		req := fasthttp.AcquireRequest()
 		res := fasthttp.AcquireResponse()
@@ -103,7 +103,7 @@ func share() {
 
 		req.Header.SetMethod("POST")
 		req.SetRequestURI(url)
-		req.SetBody([]byte(fmt.Sprintf("item_id=%v&share_delta=1", item_id)))
+		req.SetBody([]byte(fmt.Sprintf("item_id=%v&share_delta=1", itemID)))
 
 		req.Header.Set("User-Agent", uarand.GetRandom())
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
@@ -111,9 +111,8 @@ func share() {
 		if err := client.Do(req, res); err != nil {
 			failed++
 			return
-		} else {
-			shared++
 		}
+		shared++
 	}
 }
 
