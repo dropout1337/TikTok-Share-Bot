@@ -30,7 +30,7 @@
 ---
 
 ## Patched!
-- discord.gg/guest
+- Buy views/etc from https://smm.solar
 
 ### Features
 
